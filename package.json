@@ -2,13 +2,15 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {
-    "start": "node dist/index.js",
-    "dev": "nodemon"
-  },
+"scripts": {
+  "start": "node dist/index.js",
+  "build": "tsc",
+  "dev": "nodemon src/index.ts",
+  "prepare": "npm run build"
+},
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "ISC", 
   "description": "",
   "dependencies": {
     "@types/express": "^5.0.0",
