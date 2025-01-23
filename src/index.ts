@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import userRouter from "./routes/user.routes";
 import mongoose from "mongoose";
+import cors from 'cors';
 dotenv.config();
 const app = express();
 
@@ -22,6 +23,14 @@ const connectDB = async () => {
   }
 };
 
+app.use(
+  cors({
+    origin: "https://frotend-1.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE" , "OPTIONS"], 
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
+  })
+);
 connectDB();
 
 app.get('/health' , (req , res)=>{

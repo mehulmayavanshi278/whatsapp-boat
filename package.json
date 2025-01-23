@@ -2,15 +2,15 @@
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
-"scripts": {
-  "start": "node dist/index.js",
-  "build": "tsc",
-  "dev": "nodemon src/index.ts",
-  "prepare": "npm run build"
-},
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "nodemon src/index.ts",
+    "prepare": "npm run build"
+  },
   "keywords": [],
   "author": "",
-  "license": "ISC", 
+  "license": "ISC",
   "description": "",
   "dependencies": {
     "@types/express": "^5.0.0",
@@ -21,6 +21,7 @@
     "mongoose": "^8.9.5"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
