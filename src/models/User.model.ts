@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 interface IUser extends Document {
-    name: string;
+    number: string;
     channel: string;
     email:string;
     onBoardThrough?: string; 
@@ -10,7 +10,7 @@ interface IUser extends Document {
 
 
 const userSchema = new Schema<IUser>({
-    name: { type: String, required: true },
+    number: { type: String, required: true },
     channel: { type: String, required: true },
     email:{type:String},
     onBoardThrough: { type: String }, 
