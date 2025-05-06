@@ -6,6 +6,8 @@ interface IUser extends Document {
     name:string;
     email:string;
     onBoardThrough?: string; 
+    paymentStatus?: string;
+    paymentType?: string;
     timeStamp: Date;
 }
 
