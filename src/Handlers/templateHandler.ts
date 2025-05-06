@@ -270,8 +270,9 @@ const createCarouselTemplate = async () => {
                     type: "header",
                     format: "image",
                     example: {
-                      header_handle: [uploadedChunkFile1?.h],
-                      
+                      header_url: [
+                        "https://whatsease.s3.ap-south-1.amazonaws.com/public/single.jpg"
+                      ]
                     }
                   },
                   {
@@ -303,7 +304,9 @@ const createCarouselTemplate = async () => {
                     type: "header",
                     format: "image",
                     example: {
-                      header_handle: [uploadedChunkFile2.h],
+                      header_url: [
+                        "https://whatsease.s3.ap-south-1.amazonaws.com/public/double.jpg"
+                      ]
                      
                     }
                   },
@@ -336,7 +339,9 @@ const createCarouselTemplate = async () => {
                     type: "header",
                     format: "image",
                     example: {
-                      header_handle: [uploadedChunkFile3?.h],
+                      header_url: [
+                        "https://whatsease.s3.ap-south-1.amazonaws.com/public/tripple.jpg"
+                      ]
                      
                     }
                   },

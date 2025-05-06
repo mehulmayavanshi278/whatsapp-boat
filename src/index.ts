@@ -6,6 +6,7 @@ import cors from 'cors';
 import { handleIntereactiveMessage, sendWelcomeTemplate, verifyOTP } from "./Handlers/templateHandler";
 import { sendEmail } from "./Handlers/sendMail";
 import upload from "./utils/multer.init";
+import axios from "axios";
 dotenv.config();
 const app = express();
 
@@ -23,6 +24,23 @@ const connectDB = async () => {
       .catch((err) => {
         console.log(err);
       });
+  }
+};
+
+const markMessageAsRead = async (messageId: string) => {
+  try {
+    await axios({
+      method: "post",
+      url: "https://api.direct.aisensy.io/v1/mark-message-as-read",  // adjust to the exact URL from the Stoplight spec
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.AISENSY_API_KEY}`,
+      },
+      data: { message_id: messageId },
+    });
+    console.log("✅ Message marked as read:", messageId);
+  } catch (err: any) {
+    console.error("❌ Failed to mark read:", err.response?.data || err.message);
   }
 };
 
@@ -108,6 +126,7 @@ app.post('/webhook', async (req: Request, res: Response): Promise<void> => {
 
     const metadata = payload?.entry[0]?.changes[0]?.value?.metadata
     const from = payload?.entry[0]?.changes[0]?.value?.messages[0]?.from;
+    const messageId = value.messages[0]?.id;
     console.log("metadata" , metadata);
     console.log("messageType" , messageType);
     if(messageType==='text'){
@@ -116,6 +135,7 @@ app.post('/webhook', async (req: Request, res: Response): Promise<void> => {
       const bodyMsg = payload?.entry[0]?.changes[0]?.value?.messages[0]?.text?.body;
 
       console.log(typeof bodyMsg);
+      await markMessageAsRead(messageId);
 
       if(bodyMsg.toString().toLowerCase()==="hotel"){
         console.log("calling start template");
