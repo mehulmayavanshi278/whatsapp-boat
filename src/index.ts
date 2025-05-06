@@ -7,6 +7,7 @@ import { handleIntereactiveMessage, sendWelcomeTemplate, verifyOTP } from "./Han
 import { sendEmail } from "./Handlers/sendMail";
 import upload from "./utils/multer.init";
 import axios from "axios";
+import { handleBookingConfirm } from "./Handlers/paymentHandler";
 dotenv.config();
 const app = express();
 
@@ -85,6 +86,12 @@ app.post("/sendemail" , async(req,res)=>{
     console.log(err);
   }
 })
+
+app.use("/receiveData", (req: Request, res: Response) => {
+  console.log("Received data:", req.body);
+  handleBookingConfirm(req.body); // Call your function here
+  res.status(200).json({ message: "Data received successfully" });
+});
 
 app.get('/webhook' ,(req,res)=>{
   try{

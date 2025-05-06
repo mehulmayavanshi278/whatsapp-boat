@@ -9,6 +9,7 @@ interface IUser extends Document {
     paymentStatus?: string;
     paymentType?: string;
     timeStamp: Date;
+    merchantTranId?: string;
 }
 
 interface IOtp extends Document{
