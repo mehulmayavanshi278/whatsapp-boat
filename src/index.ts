@@ -93,7 +93,7 @@ app.use("/receiveData", (req: Request, res: Response) => {
   res.status(200).json({ message: "Data received successfully" });
 });
 
-app.get('/webhook' ,(req,res)=>{
+app.get('/webhook' ,(req,res)=>{  
   try{
     console.log("get webookk triggered");
     let mode = req.query['hub.mode'];
