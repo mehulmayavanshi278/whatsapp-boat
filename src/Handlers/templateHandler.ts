@@ -8,6 +8,8 @@ import {
 } from "./WhatsAppCloudHandler";
 import { generateUPILink } from "./paymentHandler";
 
+
+
 export const sendWelcomeTemplate = async (to: string) => {
   try {
     const axios = require("axios");
@@ -80,10 +82,10 @@ const sendVerificationTemplate = async (email: string, to: string) => {
   try {
     const recipient = email;
     const subject = "OTP for CII Registartion";
-    const text = `<span>Here is your OTP ${generatedOTP} for CII Registration</span>
-    <br><span>OTP is valid for 5 minutes</span>
-    <br><span>Please click on the link below to verify your email</span>
-    <br><a href="https://api.whatsapp.com/send?phone=919427606998&text=${generatedOTP}">Verify Email</a>`;
+    const text = `Here is your OTP ${generatedOTP} for CII Registration.
+    OTP is valid for 5 minutes
+    Please click on the link below to verify your email.
+    https://api.whatsapp.com/send?phone=919427606998&text=${generatedOTP}`;
 
     const email_info_id = await sendEmail(recipient, subject, text);
     if (!email_info_id) {
@@ -403,6 +405,7 @@ const sendTripleSharingHotels = async (to: string) => {
 
 const handlePayments = async (listreplyDaya: any, to: string) => {
   const amount = listreplyDaya?.description?.split("₹")[1]?.split("/")[0]?.trim();
+  // const amount = "1";
   const totalAmount = parseInt(amount) * 100;
   const totalAmountInPaise = totalAmount; // Define totalAmountInPaise
 
@@ -430,6 +433,19 @@ const handlePayments = async (listreplyDaya: any, to: string) => {
   // Create expiration timestamp (48 hours from now)
   const expirationTime = Math.floor(Date.now() / 1000) + 48 * 60 * 60;
 
+  const tripItem = {
+    name: "Hotel Booking",
+    amount: {
+      value: totalAmount, // Convert rupees to paise
+      offset: 100,
+    },
+    quantity: 1,
+    sale_amount: {
+      value: totalAmount, // Price in paise
+      offset: 100,
+    },
+  };
+
   // Create UPI payment message
   const paymentMessage = {
     messaging_product: "whatsapp",
@@ -441,11 +457,11 @@ const handlePayments = async (listreplyDaya: any, to: string) => {
       header: {
         type: "image",
         image: {
-          link: "https://whatsease.s3.ap-south-1.amazonaws.com/public/TWS.jpg", // Course logo
+          link: "https://whatsease.s3.ap-south-1.amazonaws.com/public/single.jpg", // Course logo
         },
       },
       body: {
-        text: `Thank you for selecting the Hotel, ${userName}!Please complete the payment to confirm your trip.`,
+        text: `Thank you for selecting the Hotel, ${userName}! Please complete the payment to confirm your trip.`,
       },
       footer: {
         text: "Powered by WhatsEase",
@@ -475,7 +491,7 @@ const handlePayments = async (listreplyDaya: any, to: string) => {
               description:
                 "Your payment link will expire if payment is not completed within 48 hours.",
             },
-            // items: [courseItem],
+            items: [tripItem],
             subtotal: {
               value: totalAmountInPaise,
               offset: 100,

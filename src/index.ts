@@ -144,7 +144,7 @@ app.post('/webhook', async (req: Request, res: Response): Promise<void> => {
       console.log(typeof bodyMsg);
       await markMessageAsRead(messageId);
 
-      if(bodyMsg.toString().toLowerCase()==="hotel"){
+      if(bodyMsg.toString().toLowerCase().includes("hotel")){
         console.log("calling start template");
 
         sendWelcomeTemplate(from)
