@@ -6,8 +6,11 @@ interface IUser extends Document {
     name:string;
     email:string;
     onBoardThrough?: string; 
+    paymentStatus?: string;
+    paymentType?: string;
     timeStamp: Date;
     roommates:any;
+    merchantTranId?:string;
 }
 
 interface IOtp extends Document{
