@@ -399,6 +399,13 @@ const sendTripleSharingHotels = async (to: string) => {
 };
 
 
+const handlePayments = async(listreplyDaya:any , to:string)=>{
+  try{
+    console.log("handle payments");
+  }catch(err){
+    console.log(err);
+  }
+}
 
 export const handleIntereactiveMessage = async (data: any, to: string) => {
   try {
@@ -461,6 +468,8 @@ export const handleIntereactiveMessage = async (data: any, to: string) => {
       } else if (listReplyData.id === "triple") {
         console.log("triple");
         sendRoomMateDetailsTemplate("triple",to);
+      }else if(listReplyData?.description){
+        handlePayments(listReplyData,to)
       }
     }
   } catch (err: any) {
