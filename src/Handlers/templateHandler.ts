@@ -79,7 +79,10 @@ const sendVerificationTemplate = async (email: string, to: string) => {
   try {
     const recipient = email;
     const subject = "OTP for CII Registartion";
-    const text = `here is your OTP ${generatedOTP} for CII Registration`;
+    const text = `<span>Here is your OTP ${generatedOTP} for CII Registration</span>
+    <br><span>OTP is valid for 5 minutes</span>
+    <br><span>Please click on the link below to verify your email</span>
+    <br><a href="https://api.whatsapp.com/send?phone=919427606998&text=${generatedOTP}">Verify Email</a>`;
 
     const email_info_id = await sendEmail(recipient, subject, text);
     if (!email_info_id) {
@@ -97,7 +100,7 @@ const sendVerificationTemplate = async (email: string, to: string) => {
       }
 
       newOtp.otp = generatedOTP;
-      newOtp.otpExpires = new Date(Date.now() + 300 * 1000);
+      newOtp.otpExpires = new Date(Date.now() + 600 * 1000);
       await newOtp.save();
 
       const response = await axios({
@@ -217,168 +220,341 @@ export const verifyOTP = async (otp: string, to: string) => {
       },
     });
 
-    await createCarouselTemplate();
+    // await createCarouselTemplate(to);
+    await sendRoomCarousel(to);
   } catch (err) {
     console.log(err);
   }
 };
 
-const createCarouselTemplate = async () => {
-  try {
-    const uploadSessionId = await generateSessionForUpload(
-      "single.jpg",
-      "207000",
-      "image/jpg"
-    );
-    // console.log("upload session id:",uploadSessionId.split(":")[1]);
 
-    const uploadedChunkFile1 = await uploadChunk(
-      uploadSessionId.split(":")[1],
-      "/images/single.jpg"
-    );
-    const uploadedChunkFile2 = await uploadChunk(
-      uploadSessionId.split(":")[1],
-      "/images/double.jpg"
-    );
-    const uploadedChunkFile3 = await uploadChunk(
-      uploadSessionId.split(":")[1],
-      "/images/tripple.jpg"
-    );
-
-    const response = await axios({
-      method: "post",
-      url: "https://graph.facebook.com/v22.0/502770042892473/message_templates",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.accessToken}`,
-      },
-      data: {
-        name: "carousel_template_media_cards_v1",
-        language: "en_US",
-        category: "marketing",
-        components: [
-          {
-            type: "body",
-            text: "Tender pieces of chicken cooked in a rich, creamy tomato gravy, lightly spiced and finished with a touch of butter — a true comfort food that melts in your mouth.",
-          },
-          {
-            type: "carousel",
-            cards: [
-              {
-                components: [
-                  {
-                    type: "header",
-                    format: "image",
-                    example: {
-                      header_url: [
-                        "https://whatsease.s3.ap-south-1.amazonaws.com/public/single.jpg"
-                      ]
-                    }
-                  },
-                  {
-                    type: "body",
-                    text: "For one guest. Offers full privacy with a private bed, bathroom, and all basic amenities.",
-                  },
-                  {
-                    type: "buttons",
-                    buttons: [
-                      {
-                        type: "quick_reply",
-                        text: "See All !",
-                      },
-                      // {
-                      //     type: "url",
-                      //     text: "Shop",
-                      //     url: "https://www.luckyshrub.com/rare-succulents/{{1}}",
-                      //     example: [
-                      //         "BLUE_ELF"
-                      //     ]
-                      // }
-                    ],
-                  },
-                ],
-              },
-              {
-                components: [
-                  {
-                    type: "header",
-                    format: "image",
-                    example: {
-                      header_url: [
-                        "https://whatsease.s3.ap-south-1.amazonaws.com/public/double.jpg"
-                      ]
-                     
-                    }
-                  },
-                  {
-                    type: "body",
-                    text: "For two guests. Includes two single beds or one double bed with shared facilities.",
-                  },
-                  {
-                    type: "buttons",
-                    buttons: [
-                      {
-                        type: "quick_reply",
-                        text: "See All !",
-                      },
-                      // {
-                      //     type: "url",
-                      //     text: "Shop",
-                      //     url: "https://www.luckyshrub.com/rare-succulents/{{1}}",
-                      //     example: [
-                      //         "BUDDHA"
-                      //     ]
-                      // }
-                    ],
-                  },
-                ],
-              },
-              {
-                components: [
-                  {
-                    type: "header",
-                    format: "image",
-                    example: {
-                      header_url: [
-                        "https://whatsease.s3.ap-south-1.amazonaws.com/public/tripple.jpg"
-                      ]
-                     
-                    }
-                  },
-                  {
-                    type: "body",
-                    text: "For three guests. Comes with three beds or a mix of beds, ideal for groups or families.",
-                  },
-                  {
-                    type: "buttons",
-                    buttons: [
-                      {
-                        type: "quick_reply",
-                        text: "See All !",
-                      },
-                      // {
-                      //     type: "url",
-                      //     text: "Shop",
-                      //     url: "https://www.luckyshrub.com/rare-succulents/{{1}}",
-                      //     example: [
-                      //         "BLACK_PRINCE"
-                      //     ]
-                      // }
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    });
-
-    console.log("response:", response);
-  } catch (error: any) {
-    console.log(
-      "error creating template",
-      error.response?.data || error.message
-    );
-  }
+export const sendRoomCarousel = async (to: string) => {
+  await axios({
+    method: "post",
+    url: `https://graph.facebook.com/v22.0/514190278454480/messages`,
+    headers: {
+      "Content-Type": "application/json",
+       'Authorization':`Bearer ${process.env.accessToken}`,
+    },
+    data: {
+      messaging_product: "whatsapp",
+      to:to,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        header: { type: "text", text: "👋 Welcome to Our Hotel" },
+        body: { text: "Please choose a room type:" },
+        footer: { text: "Tap an item to select" },
+        action: {
+          button: "View Rooms",
+          sections: [
+            {
+              title: "Room Categories",
+              rows: [
+                { id: "single", title: "Single Room", description: "1 bed, private bath" },
+                { id: "double", title: "Double Room", description: "2 beds, shared bath" },
+                { id: "family", title: "Triple Room", description: "3 beds, ideal for groups" }
+              ]
+            }
+          ]
+        }
+      }
+    },
+  });
 };
+
+// const createCarouselTemplate = async (to:string) => {
+//   try {
+//     const uploadSessionId = await generateSessionForUpload(
+//       "single.jpg",
+//       "207000",
+//       "image/jpg"
+//     );
+//     // console.log("upload session id:",uploadSessionId.split(":")[1]);
+
+//     const uploadedChunkFile1 = await uploadChunk(
+//       uploadSessionId.split(":")[1],
+//       "/images/single.jpg"
+//     );
+//     const uploadedChunkFile2 = await uploadChunk(
+//       uploadSessionId.split(":")[1],
+//       "/images/double.jpg"
+//     );
+//     const uploadedChunkFile3 = await uploadChunk(
+//       uploadSessionId.split(":")[1],
+//       "/images/tripple.jpg"
+//     );
+
+//     const response = await axios({
+//       method: "post",
+//       url: "https://graph.facebook.com/v22.0/502770042892473/message_templates",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${process.env.accessToken}`,
+//       },
+//       data: {
+//         name: "carousel_template_media_cards_v1",
+//         language: "en_US",
+//         category: "marketing",
+//         components: [
+//           {
+//             type: "body",
+//             text: "Tender pieces of chicken cooked in a rich, creamy tomato gravy, lightly spiced and finished with a touch of butter — a true comfort food that melts in your mouth.",
+//           },
+//           {
+//             type: "carousel",
+//             cards: [
+//               {
+//                 components: [
+//                   {
+//                     type: "header",
+//                     format: "image",
+//                     example: {
+//                       header_handle: [uploadedChunkFile1?.h],      
+//                     },
+//                   },
+//                   {
+//                     type: "body",
+//                     text: "For one guest. Offers full privacy with a private bed, bathroom, and all basic amenities.",
+//                   },
+//                   {
+//                     type: "buttons",
+//                     buttons: [
+//                       {
+//                         type: "quick_reply",
+//                         text: "See All !",
+//                       },
+//                       // {
+//                       //     type: "url",
+//                       //     text: "Shop",
+//                       //     url: "https://www.luckyshrub.com/rare-succulents/{{1}}",
+//                       //     example: [
+//                       //         "BLUE_ELF"
+//                       //     ]
+//                       // }
+//                     ],
+//                   },
+//                 ],
+//               },
+//               {
+//                 components: [
+//                   {
+//                     type: "header",
+//                     format: "image",
+//                     example: {
+//                       header_handle: [uploadedChunkFile2.h],         
+//                     },
+                
+//                   },
+//                   {
+//                     type: "body",
+//                     text: "For two guests. Includes two single beds or one double bed with shared facilities.",
+//                   },
+//                   {
+//                     type: "buttons",
+//                     buttons: [
+//                       {
+//                         type: "quick_reply",
+//                         text: "See All !",
+//                       },
+//                       // {
+//                       //     type: "url",
+//                       //     text: "Shop",
+//                       //     url: "https://www.luckyshrub.com/rare-succulents/{{1}}",
+//                       //     example: [
+//                       //         "BUDDHA"
+//                       //     ]
+//                       // }
+//                     ],
+//                   },
+//                 ],
+//               },
+//               {
+//                 components: [
+//                   {
+//                     type: "header",
+//                     format: "image",
+//                     example: {
+//                       header_handle: [uploadedChunkFile3?.h],
+                     
+//                     },
+          
+//                   },
+//                   {
+//                     type: "body",
+//                     text: "For three guests. Comes with three beds or a mix of beds, ideal for groups or families.",
+//                   },
+//                   {
+//                     type: "buttons",
+//                     buttons: [
+//                       {
+//                         type: "quick_reply",
+//                         text: "See All !",
+//                       },
+//                       // {
+//                       //     type: "url",
+//                       //     text: "Shop",
+//                       //     url: "https://www.luckyshrub.com/rare-succulents/{{1}}",
+//                       //     example: [
+//                       //         "BLACK_PRINCE"
+//                       //     ]
+//                       // }
+//                     ],
+//                   },
+//                 ],
+//               },
+//             ],
+//           },
+//         ],
+//       },
+//     });
+
+//     console.log("response:", response);
+
+
+
+
+//     const assetid1 = await getAssetsId('/images/atulpurohit.png');
+//     const assetid2 = await getAssetsId('/images/dinojames.png');
+//     const assetid3 = await getAssetsId('/images/kshitij.png');
+
+
+
+//     const res = await axios({
+//       method: 'post',
+//       url: 'https://graph.facebook.com/v22.0/514190278454480/messages',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${process.env.accessToken}` // Replace with your actual access token
+//       },
+//       data: {
+//         messaging_product: 'whatsapp',
+//         recipient_type: 'individual',
+//         to: to, // Replace with the actual recipient's phone number
+//         type: 'template',
+//         template: {
+//           name: 'carousel_template_media_cards_v1',
+//           language: {
+//             code: 'en_US',
+//           },
+//           components: [
+//             {
+//               type: 'body',
+//               parameters: [
+//                 // { type: 'text', text: 'Pablo' },
+//                 // { type: 'text', text: '20%' },
+//                 // { type: 'text', text: '20OFF' },
+//               ],
+//             },
+//             {
+//               type: 'carousel',
+//               cards: [
+//                 {
+//                   card_index: 0,
+//                   components: [
+//                     {
+//                       type: 'header',
+//                       parameters: [
+//                         {
+//                           type: 'image',
+//                           image: { id: assetid1 },
+//                         },
+//                       ],
+//                     },
+//                     {
+//                       type: 'button',
+//                       sub_type: 'quick_reply',
+//                       index: '0',
+//                       parameters: [
+//                         { type: 'payload', payload: 'more-aloes' },
+//                       ],
+//                     },
+//                     // {
+//                     //   type: 'button',
+//                     //   sub_type: 'url',
+//                     //   index: '1',
+//                     //   parameters: [
+//                     //     { type: 'text', text: 'blue-elf' },
+//                     //   ],
+//                     // },
+//                   ],
+//                 },
+//                 {
+//                   card_index: 1,
+//                   components: [
+//                     {
+//                       type: 'header',
+//                       parameters: [
+//                         {
+//                           type: 'image',
+//                           image: { id: assetid2 },
+//                         },
+//                       ],
+//                     },
+//                     {
+//                       type: 'button',
+//                       sub_type: 'quick_reply',
+//                       index: '0',
+//                       parameters: [
+//                         { type: 'payload', payload: 'more-crassulas' },
+//                       ],
+//                     },
+//                     // {
+//                     //   type: 'button',
+//                     //   sub_type: 'url',
+//                     //   index: '1',
+//                     //   parameters: [
+//                     //     { type: 'text', text: 'buddhas-temple' },
+//                     //   ],
+//                     // },
+//                   ],
+//                 },
+//                 {
+//                   card_index: 2,
+//                   components: [
+//                     {
+//                       type: 'header',
+//                       parameters: [
+//                         {
+//                           type: 'image',
+//                           image: { id: assetid3 },
+//                         },
+//                       ],
+//                     },
+//                     {
+//                       type: 'button',
+//                       sub_type: 'quick_reply',
+//                       index: '0',
+//                       parameters: [
+//                         { type: 'payload', payload: 'more-echeverias' },
+//                       ],
+//                     },
+//                     // {
+//                     //   type: 'button',
+//                     //   sub_type: 'url',
+//                     //   index: '1',
+//                     //   parameters: [
+//                     //     { type: 'text', text: 'black-prince' },
+//                     //   ],
+//                     // },
+//                   ],
+//                 },
+//               ],
+//             },
+//           ],
+//         },
+//       },
+//     });
+
+
+
+
+
+
+//   } catch (error: any) {
+//     console.log(
+//       "error creating template",
+//       error.response?.data || error.message
+//     );
+//   }
+// };
