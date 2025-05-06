@@ -7,6 +7,7 @@ interface IUser extends Document {
     email:string;
     onBoardThrough?: string; 
     timeStamp: Date;
+    roommates:any;
 }
 
 interface IOtp extends Document{
@@ -29,6 +30,17 @@ const userSchema = new Schema<IUser>({
     email:{type:String , required:true},
     onBoardThrough: { type: String }, 
     timeStamp: { type: Date, default: Date.now },
+    roommates:[
+        {
+            name:{
+                type:String,
+
+            },
+            phone:{
+                type:String
+            }
+        }
+    ]
 });
 
 
