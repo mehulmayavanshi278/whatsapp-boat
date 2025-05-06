@@ -24,7 +24,7 @@ interface UPIResponse {
 const url = `https://backend.aisensy.com/direct-apis/t1/messages`;
 const ADMIN_EMAIL = "mehulmayavanshi953@gmail.com";
 
-async function generateUPILink(
+export async function generateUPILink(
     phone_number: string,
     amount: number
 ): Promise<UPIResponse> {

@@ -6,6 +6,7 @@ import {
   uploadChunk,
   getAssetsId,
 } from "./WhatsAppCloudHandler";
+import { generateUPILink } from "./paymentHandler";
 
 export const sendWelcomeTemplate = async (to: string) => {
   try {
@@ -134,7 +135,7 @@ const sendVerificationTemplate = async (email: string, to: string) => {
   }
 };
 
-export const sendRoomMateDetailsTemplate = async (type:string , to: string) => {
+export const sendRoomMateDetailsTemplate = async (type: string, to: string) => {
   const url = "https://graph.facebook.com/v22.0/514190278454480/messages";
 
   const data = {
@@ -176,9 +177,9 @@ export const sendRoomMateDetailsTemplate = async (type:string , to: string) => {
   });
 
 
-  if(type==="double"){
+  if (type === "double") {
     sendDoubleSharingHotels(to)
-  }else if(type==="triple"){
+  } else if (type === "triple") {
     sendTripleSharingHotels(to);
   }
 
@@ -187,10 +188,10 @@ export const sendRoomMateDetailsTemplate = async (type:string , to: string) => {
 
 
 
-const sendSingleSharingHotels = async(to:string)=>{
-  try{
-    
-    
+const sendSingleSharingHotels = async (to: string) => {
+  try {
+
+
     await axios({
       method: "post",
       url: `https://graph.facebook.com/v22.0/514190278454480/messages`,
@@ -248,10 +249,10 @@ const sendSingleSharingHotels = async(to:string)=>{
         },
       },
     });
-    
 
 
-  }catch(err:any){
+
+  } catch (err: any) {
     console.log(
       "error handling intereactive message ,",
       err.response?.data || err.message
@@ -260,75 +261,75 @@ const sendSingleSharingHotels = async(to:string)=>{
 }
 
 
-const sendDoubleSharingHotels = async(to:string)=>{
-    try{
+const sendDoubleSharingHotels = async (to: string) => {
+  try {
 
 
-      await axios({
-        method: "post",
-        url: `https://graph.facebook.com/v22.0/514190278454480/messages`,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.accessToken}`,
-        },
-        data: {
-          messaging_product: "whatsapp",
-          to: to,
-          type: "interactive",
-          interactive: {
-            type: "list",
-            body: {
-              text: "Please choose a *double sharing* room to see more details and pricing:",
-            },
-            footer: {
-              text: "Tap a room to select",
-            },
-            action: {
-              button: "View Rooms",
-              sections: [
-                {
-                  title: "Double Sharing Rooms",
-                  rows: [
-                    {
-                      id: "Oceanview_Resort",
-                      title: "Oceanview Resort",
-                      description: "₹1500/night • 2 beds • Shared bath",
-                    },
-                    {
-                      id: "Royal_Orchid_Suites",
-                      title: "Royal Orchid Suites",
-                      description: "₹2000/night • 2 beds • Private bath",
-                    },
-                    {
-                      id: "Sunrise_Comfort_Hotel",
-                      title: "Sunrise Comfort Hotel",
-                      description: "₹1700/night • 2 beds • Shared bath",
-                    },
-                    {
-                      id: "The_Urban_Nest",
-                      title: "The Urban Nest",
-                      description: "₹2100/night • 2 beds • Private bath",
-                    },
-                    {
-                      id: "Blissful_Nights_Inn",
-                      title: "Blissful Nights Inn",
-                      description: "₹2300/night • 2 beds • Shared bath",
-                    },
-                  ],
-                },
-              ],
-            },
+    await axios({
+      method: "post",
+      url: `https://graph.facebook.com/v22.0/514190278454480/messages`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.accessToken}`,
+      },
+      data: {
+        messaging_product: "whatsapp",
+        to: to,
+        type: "interactive",
+        interactive: {
+          type: "list",
+          body: {
+            text: "Please choose a *double sharing* room to see more details and pricing:",
+          },
+          footer: {
+            text: "Tap a room to select",
+          },
+          action: {
+            button: "View Rooms",
+            sections: [
+              {
+                title: "Double Sharing Rooms",
+                rows: [
+                  {
+                    id: "Oceanview_Resort",
+                    title: "Oceanview Resort",
+                    description: "₹1500/night • 2 beds • Shared bath",
+                  },
+                  {
+                    id: "Royal_Orchid_Suites",
+                    title: "Royal Orchid Suites",
+                    description: "₹2000/night • 2 beds • Private bath",
+                  },
+                  {
+                    id: "Sunrise_Comfort_Hotel",
+                    title: "Sunrise Comfort Hotel",
+                    description: "₹1700/night • 2 beds • Shared bath",
+                  },
+                  {
+                    id: "The_Urban_Nest",
+                    title: "The Urban Nest",
+                    description: "₹2100/night • 2 beds • Private bath",
+                  },
+                  {
+                    id: "Blissful_Nights_Inn",
+                    title: "Blissful Nights Inn",
+                    description: "₹2300/night • 2 beds • Shared bath",
+                  },
+                ],
+              },
+            ],
           },
         },
-      });
-      
+      },
+    });
 
-    }catch(err:any){
-      console.log(
-        "error handling intereactive message ,",
-        err.response?.data || err.message
-      );
-    }
+
+  } catch (err: any) {
+    console.log(
+      "error handling intereactive message ,",
+      err.response?.data || err.message
+    );
+  }
 }
 
 
@@ -389,8 +390,9 @@ const sendTripleSharingHotels = async (to: string) => {
             ],
           },
         },
-      }})
-      }  catch (err: any) {
+      }
+    })
+  } catch (err: any) {
     console.log(
       "error handling interactive message,",
       err.response?.data || err.message
@@ -399,10 +401,117 @@ const sendTripleSharingHotels = async (to: string) => {
 };
 
 
-const handlePayments = async(listreplyDaya:any , to:string)=>{
-  try{
+const handlePayments = async (listreplyDaya: any, to: string) => {
+  const amount = listreplyDaya?.description?.split("₹")[1]?.split("/")[0]?.trim();
+  const totalAmount = parseInt(amount) * 100;
+  const totalAmountInPaise = totalAmount; // Define totalAmountInPaise
+
+  const upiResponse = await generateUPILink(to, totalAmount);
+  // Generate a unique reference ID
+  const referenceId = upiResponse.ref_id || "default_ref_id";
+
+  console.log(upiResponse, "upiREsponse");
+  // Variables for payment details
+
+  // Create UPI payment link (static for now - replace with actual implementation)
+  const upiLink = upiResponse.upiLink;
+  const paymentId = referenceId; // Use the generated reference ID
+
+  const userData = await User.findOne({
+    number: to,
+  });
+
+  const userName = userData?.name || "User"; // Fallback to "User" if name is not found
+
+  // No tax
+  const taxAmount = 0;
+
+
+  // Create expiration timestamp (48 hours from now)
+  const expirationTime = Math.floor(Date.now() / 1000) + 48 * 60 * 60;
+
+  // Create UPI payment message
+  const paymentMessage = {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: to,
+    type: "interactive",
+    interactive: {
+      type: "order_details",
+      header: {
+        type: "image",
+        image: {
+          link: "https://whatsease.s3.ap-south-1.amazonaws.com/public/TWS.jpg", // Course logo
+        },
+      },
+      body: {
+        text: `Thank you for selecting the Hotel, ${userName}!Please complete the payment to confirm your trip.`,
+      },
+      footer: {
+        text: "Powered by WhatsEase",
+      },
+      action: {
+        name: "review_and_pay",
+        parameters: {
+          reference_id: paymentId,
+          type: "digital-goods",
+          payment_settings: [
+            {
+              type: "upi_intent_link",
+              upi_intent_link: {
+                link: upiLink,
+              },
+            },
+          ],
+          currency: "INR",
+          total_amount: {
+            value: totalAmountInPaise,
+            offset: 100,
+          },
+          order: {
+            status: "pending",
+            expiration: {
+              timestamp: expirationTime.toString(),
+              description:
+                "Your payment link will expire if payment is not completed within 48 hours.",
+            },
+            // items: [courseItem],
+            subtotal: {
+              value: totalAmountInPaise,
+              offset: 100,
+            },
+            tax: {
+              value: taxAmount,
+              offset: 100,
+              description: "No tax applied",
+            },
+          },
+        },
+      },
+    },
+  };
+
+  try {
+    const response = await axios({
+      method: "post",
+      url: "https://graph.facebook.com/v22.0/514190278454480/messages",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.accessToken}`,
+      },
+      data: paymentMessage,
+    });
+    console.log("Payment message sent:", response.data);
+  } catch (error:any) {
+    console.error(
+      "Error sending payment message:",
+      error.response?.data || error.message
+    );
+  }
+
+  try {
     console.log("handle payments");
-  }catch(err){
+  } catch (err) {
     console.log(err);
   }
 }
@@ -419,16 +528,16 @@ export const handleIntereactiveMessage = async (data: any, to: string) => {
 
         const result = [];
 
-        const user = await User.findOne({number:to});
-        if(!user) return;
-        
+        const user = await User.findOne({ number: to });
+        if (!user) return;
+
 
         for (let i = 1; i <= 2; i++) {
           const name = nfmData[`roommate${i}_name`] || "";
           const phone = nfmData[`roommate${i}_phone`] || "";
-    
-            user?.roommates.push({ name, phone });
-          
+
+          user?.roommates.push({ name, phone });
+
         }
 
         await user.save();
@@ -464,12 +573,12 @@ export const handleIntereactiveMessage = async (data: any, to: string) => {
         sendSingleSharingHotels(to);
       } else if (listReplyData.id === "double") {
         console.log("double");
-        sendRoomMateDetailsTemplate("double",to);
+        sendRoomMateDetailsTemplate("double", to);
       } else if (listReplyData.id === "triple") {
         console.log("triple");
-        sendRoomMateDetailsTemplate("triple",to);
-      }else if(listReplyData?.description){
-        handlePayments(listReplyData,to)
+        sendRoomMateDetailsTemplate("triple", to);
+      } else if (listReplyData?.description) {
+        handlePayments(listReplyData, to)
       }
     }
   } catch (err: any) {
