@@ -87,7 +87,7 @@ app.post("/sendemail" , async(req,res)=>{
   }
 })
 
-app.use("/receiveData", (req: Request, res: Response) => {
+app.use("/receive-data", (req: Request, res: Response) => {
   console.log("Received data:", req.body);
   handleBookingConfirm(req.body); // Call your function here
   res.status(200).json({ message: "Data received successfully" });
