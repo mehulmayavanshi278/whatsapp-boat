@@ -37,7 +37,7 @@ export const uploadChunk = async (uploadSessionId:string, filePath:string) => {
       fileStream,
       {
           headers: {
-              Authorization: `OAuth ${process.env.accessToken}`,
+              Authorization: `OAuth ${process.env.USER_TOKEN}`,
               'file_offset': '0',
               'Content-Type': 'application/octet-stream',
               'Content-Length': fileSize.toString(), // ✅ must send
@@ -63,8 +63,8 @@ export const getAssetsId = async (filePath:string) => {
       method: 'post',
       url: 'https://graph.facebook.com/v22.0/641841379005586/media',
       headers: {
-        'Authorization': `Bearer ${process.env.accessToken}`,
         'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${process.env.accessToken}`,
       },
       data: {
         messaging_product: 'whatsapp',
