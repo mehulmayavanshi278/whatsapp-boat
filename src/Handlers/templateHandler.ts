@@ -82,10 +82,47 @@ const sendVerificationTemplate = async (email: string, to: string) => {
   try {
     const recipient = email;
     const subject = "OTP for CII Registartion";
-    const text = `Here is your OTP ${generatedOTP} for CII Registration.
-    OTP is valid for 5 minutes
-    Please click on the link below to verify your email.
-    https://api.whatsapp.com/send?phone=919427606998&text=${generatedOTP}`;
+    const text = `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #0047AB; color: white; padding: 15px; text-align: center; }
+    .content { padding: 20px; background-color: #f9f9f9; }
+    .otp-box { font-size: 24px; font-weight: bold; text-align: center; 
+               padding: 10px; margin: 20px 0; background-color: #e9e9e9; 
+               border-radius: 5px; letter-spacing: 5px; }
+    .button { display: inline-block; background-color: #0047AB; color: white !important;
+              padding: 12px 24px; text-decoration: none; border-radius: 5px;
+              font-weight: bold; margin: 20px 0; }
+    .footer { font-size: 12px; color: #777; margin-top: 20px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>CII Registration OTP</h2>
+    </div>
+    <div class="content">
+      <p>Dear User,</p>
+      <p>Thank you for registering with CII. Please use the following OTP to verify your email address:</p>
+      <div class="otp-box">${generatedOTP}</div>
+      <p><strong>Note:</strong> This OTP is valid for 5 minutes only.</p>
+      <p>Alternatively, you can click the button below to verify directly through WhatsApp:</p>
+      <div style="text-align: center;">
+        <a href="https://api.whatsapp.com/send?phone=919427606998&text=${generatedOTP}" class="button">Verify on WhatsApp</a>
+      </div>
+    </div>
+    <div class="footer">
+      <p>This is an automated message. Please do not reply to this email.</p>
+      <p>&copy; ${new Date().getFullYear()} Confederation of Indian Industry. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
 
     const email_info_id = await sendEmail(recipient, subject, text);
     if (!email_info_id) {
@@ -405,9 +442,9 @@ const sendTripleSharingHotels = async (to: string) => {
 
 const handlePayments = async (listreplyDaya: any, to: string) => {
   // const amount = listreplyDaya?.description?.split("₹")[1]?.split("/")[0]?.trim();
-  const amount = "1";
-  const totalAmount = parseInt(amount) * 100;
-  const totalAmountInPaise = totalAmount; // Define totalAmountInPaise
+  const amount = 1.0;
+  const totalAmount = amount;
+  const totalAmountInPaise = totalAmount * 100; // Define totalAmountInPaise
 
   const upiResponse = await generateUPILink(to, totalAmount);
   // Generate a unique reference ID
@@ -436,12 +473,12 @@ const handlePayments = async (listreplyDaya: any, to: string) => {
   const tripItem = {
     name: "Hotel Booking",
     amount: {
-      value: totalAmount, // Convert rupees to paise
+      value: totalAmount * 100, // Convert rupees to paise
       offset: 100,
     },
     quantity: 1,
     sale_amount: {
-      value: totalAmount, // Price in paise
+      value: totalAmount * 100, // Price in paise
       offset: 100,
     },
   };
@@ -518,7 +555,7 @@ const handlePayments = async (listreplyDaya: any, to: string) => {
       data: paymentMessage,
     });
     console.log("Payment message sent:", response.data);
-  } catch (error:any) {
+  } catch (error: any) {
     console.error(
       "Error sending payment message:",
       error.response?.data || error.message
