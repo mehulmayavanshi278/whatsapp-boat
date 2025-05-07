@@ -18,7 +18,7 @@ export async function sendEmail(to: string, subject: string, text: string): Prom
     from: `"Your Name or App" <${process.env.EMAIL_USER}>`,
     to,
     subject,
-    text
+    html: text, // Use html for HTML content
   });
 
   console.log(`Email sent: ${info.messageId}`);
