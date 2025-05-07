@@ -494,7 +494,7 @@ const handlePayments = async (listreplyDaya: any, to: string) => {
       header: {
         type: "image",
         image: {
-          link: "https://whatsease.s3.ap-south-1.amazonaws.com/public/single.png", // Course logo
+          link: "https://whatsease.s3.ap-south-1.amazonaws.com/public/single.jpg", // Course logo
         },
       },
       body: {
@@ -749,8 +749,8 @@ export const verifyOTP = async (otp: string, to: string) => {
     });
 
     // await createCarouselTemplate(to);
-    await handleShowItems(to);
-    // await sendRoomCarousel(to);
+    // await handleShowItems(to);
+    await sendRoomCarousel(to);
   } catch (err) {
     console.log(err);
   }
@@ -759,52 +759,52 @@ export const verifyOTP = async (otp: string, to: string) => {
 
 
 
-// export const sendRoomCarousel = async (to: string) => {
-//   await axios({
-//     method: "post",
-//     url: `https://graph.facebook.com/v22.0/514190278454480/messages`,
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${process.env.accessToken}`,
-//     },
-//     data: {
-//       messaging_product: "whatsapp",
-//       to: to,
-//       type: "interactive",
-//       interactive: {
-//         type: "list",
-//         header: { type: "text", text: "👋 Welcome to Our Hotel" },
-//         body: { text: "Please choose a room type:" },
-//         footer: { text: "Tap an item to select" },
-//         action: {
-//           button: "View Rooms",
-//           sections: [
-//             {
-//               title: "Room Categories",
-//               rows: [
-//                 {
-//                   id: "single",
-//                   title: "Single Room",
-//                   description: "1 bed, private bath",
-//                 },
-//                 {
-//                   id: "double",
-//                   title: "Double Room",
-//                   description: "2 beds, shared bath",
-//                 },
-//                 {
-//                   id: "triple",
-//                   title: "Triple Room",
-//                   description: "3 beds, ideal for groups",
-//                 } ,
-//               ],
-//             },
-//           ],
-//         },
-//       },
-//     },
-//   });
-// };
+export const sendRoomCarousel = async (to: string) => {
+  await axios({
+    method: "post",
+    url: `https://graph.facebook.com/v22.0/514190278454480/messages`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.accessToken}`,
+    },
+    data: {
+      messaging_product: "whatsapp",
+      to: to,
+      type: "interactive",
+      interactive: {
+        type: "list",
+        header: { type: "text", text: "👋 Welcome to Our Hotel" },
+        body: { text: "Please choose a room type:" },
+        footer: { text: "Tap an item to select" },
+        action: {
+          button: "View Rooms",
+          sections: [
+            {
+              title: "Room Categories",
+              rows: [
+                {
+                  id: "single",
+                  title: "Single Room",
+                  description: "1 bed, private bath",
+                },
+                {
+                  id: "double",
+                  title: "Double Room",
+                  description: "2 beds, shared bath",
+                },
+                {
+                  id: "triple",
+                  title: "Triple Room",
+                  description: "3 beds, ideal for groups",
+                } ,
+              ],
+            },
+          ],
+        },
+      },
+    },
+  });
+};
 
 
 
