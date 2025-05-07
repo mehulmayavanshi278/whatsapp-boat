@@ -569,6 +569,54 @@ const handlePayments = async (listreplyDaya: any, to: string) => {
   }
 }
 
+
+const sendCheckedInDetailsTemplate = async(to:string)=>{
+  try{
+    // 
+    const url =  "https://graph.facebook.com/v22.0/514190278454480/messages";
+    const data = {
+      messaging_product: "whatsapp",
+      recipient_type: "individual",
+      to:to,
+      type:'template',
+      template:{
+        name:"cii_checkin_details_template",
+        language: {
+          code: "en",
+        },
+        components:[
+          {
+            type: "button",
+            sub_type: "flow",
+            index: "0",
+            parameters: [
+              {
+                type: "action",
+                action: {
+                  flow_token: "flows-builder-41b29403",
+                },
+              },
+            ],
+          },
+        ]
+      }
+    }
+
+    const res = await axios({
+      method:"post",
+      url:url,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.accessToken}`,
+      },
+      data:data
+    })
+
+  }catch(err){
+    console.log(err);
+  }
+}
+
 export const handleIntereactiveMessage = async (data: any, to: string) => {
   try {
     console.log("intereacive data", data);
@@ -615,6 +663,8 @@ export const handleIntereactiveMessage = async (data: any, to: string) => {
         await newUserEntry.save();
 
         console.log("user created userData:", newUserEntry);
+      }else if(nfmData?.checkeInDate){
+        
       }
     } else if (data.type === "list_reply") {
       console.log("list reply data");
@@ -632,6 +682,7 @@ export const handleIntereactiveMessage = async (data: any, to: string) => {
         sendRoomMateDetailsTemplate("triple", to);
       } else if (listReplyData?.description) {
         handlePayments(listReplyData, to)
+        // sendCheckedInDetailsTemplate(to);
       }
     }
   } catch (err: any) {
