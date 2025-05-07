@@ -443,8 +443,8 @@ const sendTripleSharingHotels = async (to: string) => {
 const handlePayments = async (listreplyDaya: any, to: string) => {
   // const amount = listreplyDaya?.description?.split("₹")[1]?.split("/")[0]?.trim();
   const amount = 1.0;
-  const totalAmount = 1.0 * 100;
-  const totalAmountInPaise = totalAmount; // Define totalAmountInPaise
+  const totalAmount = amount;
+  const totalAmountInPaise = totalAmount * 100; // Define totalAmountInPaise
 
   const upiResponse = await generateUPILink(to, totalAmount);
   // Generate a unique reference ID
@@ -473,12 +473,12 @@ const handlePayments = async (listreplyDaya: any, to: string) => {
   const tripItem = {
     name: "Hotel Booking",
     amount: {
-      value: totalAmount, // Convert rupees to paise
+      value: totalAmount * 100, // Convert rupees to paise
       offset: 100,
     },
     quantity: 1,
     sale_amount: {
-      value: totalAmount, // Price in paise
+      value: totalAmount * 100, // Price in paise
       offset: 100,
     },
   };
